@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                 response = RetrofitClient.apiService.procesarDatos()
                 val jsonResponse = response.string()
                 val jsonArray = JSONArray(jsonResponse)
-                val datos = mutableListOf<String>()
+                val datos = mutableListOf<Coordinador>()
                 for (i in 0 until jsonArray.length()) {
                     val objeto = jsonArray.getJSONObject(i)
                     val idC = objeto.getString("idC")
@@ -75,21 +75,39 @@ class MainActivity : AppCompatActivity() {
                     val email = objeto.getString("email")
                     val facultad = objeto.getString("facultad")
                     if (titulo != "MSc") {
-                        val mostrar = "Id: $idC\nNombre: $nombres $apellidos\nFecha de Nacimiento: $fechaNac\nTítulo: $titulo\nEmail: $email\nFacultad: $facultad"
-                        datos.add(mostrar)
+                        val coordinador = Coordinador(idC, nombres, apellidos, fechaNac, titulo, email, facultad)
+                        datos.add(coordinador)
                     }
                 }
-                val datosFormatted = datos.joinToString("\n\n")
+                // Ordenar los coordinadores por fecha de nacimiento
+                datos.sortBy { it.fechaNac }
+
+                val datosFormatted = datos.joinToString("\n\n") { coordinador ->
+                    "Id: ${coordinador.idC}\nNombre: ${coordinador.nombres} ${coordinador.apellidos}\nFecha de Nacimiento: ${coordinador.fechaNac}\nTítulo: ${coordinador.titulo}\nEmail: ${coordinador.email}\nFacultad: ${coordinador.facultad}"
+                }
+
                 withContext(Dispatchers.Main) {
                     textView.text = datosFormatted
                 }
             } catch (e: Exception) {
                 Log.e("TAG", "Error al realizar la solicitud HTTP", e)
-
             } finally {
                 response?.close()
             }
         }
     }
+
+    data class Coordinador(
+        val idC: String,
+        val nombres: String,
+        val apellidos: String,
+        val fechaNac: String,
+        val titulo: String,
+        val email: String,
+        val facultad: String
+    )
+
+
+}
 
 }
