@@ -74,8 +74,10 @@ class MainActivity : AppCompatActivity() {
                     val titulo = objeto.getString("titulo")
                     val email = objeto.getString("email")
                     val facultad = objeto.getString("facultad")
-                    val mostrar = "Id: $idC\nNombre: $nombres $apellidos\nFecha de Nacimiento: $fechaNac\nTítulo: $titulo\nEmail: $email\nFacultad: $facultad"
-                    datos.add(mostrar)
+                    if (titulo != "MSc") {
+                        val mostrar = "Id: $idC\nNombre: $nombres $apellidos\nFecha de Nacimiento: $fechaNac\nTítulo: $titulo\nEmail: $email\nFacultad: $facultad"
+                        datos.add(mostrar)
+                    }
                 }
                 val datosFormatted = datos.joinToString("\n\n")
                 withContext(Dispatchers.Main) {
@@ -88,8 +90,6 @@ class MainActivity : AppCompatActivity() {
                 response?.close()
             }
         }
-
-
     }
 
 }
